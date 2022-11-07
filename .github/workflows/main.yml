@@ -20,6 +20,7 @@ jobs:
 
     - name: merge
       run: |
+        git checkout origin/release
         git merge -X theirs master  
         git add .
         git commit -m"test merge"
