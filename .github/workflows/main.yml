@@ -20,6 +20,7 @@ jobs:
 
     - name: merge
       run: |
+        git fetch
         git checkout origin/release
         git merge -X theirs master  
         git add .
