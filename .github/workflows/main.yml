@@ -1,0 +1,28 @@
+
+name: Merge to release branch
+
+on:
+  workflow_dispatch: 
+
+   
+
+jobs:
+  
+   merge:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Checkout releaese
+      uses: actions/checkout@v3
+      with:
+          repository: 'noakfir/stage'
+          ref: 'origin/release'
+
+    - name: merge
+      run: |
+        git merge -X theirs master  
+        git add .
+        git commit -m"test merge"
+        git push
+        
+          
