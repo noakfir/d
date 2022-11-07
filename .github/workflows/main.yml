@@ -20,6 +20,8 @@ jobs:
 
     - name: merge
       run: |
+        git config --local user.email "noa.kfir@aquant.io"
+        git config --local user.name "noakfir"
         git fetch
         git checkout origin/release
         git merge --no-ff origin/master --allow-unrelated-histories 
