@@ -22,7 +22,7 @@ jobs:
       run: |
         git fetch
         git checkout origin/release
-        git merge -X theirs origin/master  
+        git merge -X theirs master  
         git add .
         git commit -m"test merge"
         git push
