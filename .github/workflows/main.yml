@@ -22,7 +22,7 @@ jobs:
       run: |
         git fetch
         git checkout origin/release
-        git merge --no-ff origin/master  
+        git merge --no-ff origin/master --allow-unrelated-histories 
         git add .
         git commit -m"test merge"
         git push
