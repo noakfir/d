@@ -16,3 +16,4 @@ jobs:
           heroku_email: "noa.kfir@aquant.io"
           branch: master
           dontuseforce: true
+          buildpack: true
