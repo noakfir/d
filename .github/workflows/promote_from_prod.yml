@@ -1,4 +1,4 @@
-name: promote
+name: promote form prod
 
 on:
   workflow_dispatch:
