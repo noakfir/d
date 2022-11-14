@@ -19,4 +19,4 @@ jobs:
           dontuseforce: true
           buildpack: true
           appdir: app
-     - run: API_URL=https://my.new.dev.api.com heroku pipelines:promote -a new-app-stage1
+     - run: API_URL=https://my.new.dev.api.com heroku pipelines:promote -a new-app-stage1 --to noa-production
