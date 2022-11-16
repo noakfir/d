@@ -12,9 +12,6 @@ on:
        type: string
        required: true 
      
-       
-    
-
 jobs:
   change_env_vars:
     name: Change Environment variables 
@@ -26,7 +23,7 @@ jobs:
        uses: akhileshns/heroku-deploy@v3.12.12
        with:
          heroku_api_key: ${{secrets.HEROKU_API_KEY_NOA}}
-         heroku_app_name: "new-app-stage1"
+         heroku_app_name: "noa-production"
          heroku_email: "noa.kfir@aquant.io"
          justlogin: true
       
@@ -35,27 +32,38 @@ jobs:
        run: |
          output=$(heroku config:get API_URL -a noa-production)
          echo "old_version=$output" >> $GITHUB_OUTPUT
+     - name: Get Legacy LATEST_PACKAGE_ID
+       id: legacy_id_number
+       run: |
+         output=$(heroku config:get ID -a noa-production)
+         echo "old_id=$output" >> $GITHUB_OUTPU
      
      - name: Set LEGACY_PACKAGE_VERSION in Prod
        run: |
-         heroku config:set old_var=$INPUT_STORE --app "noa-production"
+         heroku config:set OLD_URL=$LEGACY_API --app noa-production
        env: 
-         INPUT_STORE: ${{steps.legacy_new_version.outputs.old_version}}
+         LEGACY_API: ${{steps.legacy_new_version.outputs.old_version}}
          
      - name: Set LATEST_PACKAGE_VERSION and LATEST_PACKAGE_ID in Prod
        run: |
-         heroku config:set new_var=123 var=def -a new-app-stage1
+         heroku config:set API_URL=$NEW_API ID=$NEW_ID -a noa-production
+         env:
+         NEW_API: ${{github.event.inputs.version_number}}
+         NEW_ID: ${{steps.legacy_id_number.outputs.old_id}}    
      
      - name: Set LATEST_PACKAGE_VERSION and LATEST_PACKAGE_ID in Legacy 
        run: |
-         heroku config:set new_var=123 var=def -a new-app-stage1
+         heroku config:set API_URL=$LEGACY_API ID=$LEGACY_ID -a wrong-app1
+       env:
+         LEGACY_API: ${{steps.legacy_new_version.outputs.old_version}}
+         LEGACY_ID: ${{steps.legacy_id_number.outputs.old_id}}
        
-        
-
-        
-    
-    
-     - uses: actions/checkout@v2
+  promote_to_legacy:
+    name: Promote Production to Legacy
+    needs: change_env_vars
+    runs-on: ubuntu-latest
+    steps:
+     - uses: actions/checkout@v3
      - uses: akhileshns/heroku-deploy@v3.12.12
        with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY_NOA}}
@@ -64,7 +72,12 @@ jobs:
           justlogin: true
      - run: heroku pipelines:promote -a noa-production --to wrong-app1
      
-     - uses: actions/checkout@v2
+  promote_to_production:
+    name: Promote Stage to Prod
+    needs: promote_to_legacy
+    runs-on: ubuntu-latest
+    steps:
+     - uses: actions/checkout@v3
      - uses: akhileshns/heroku-deploy@v3.12.12
        with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY_NOA}}
