@@ -3,10 +3,16 @@ name: promote form prod
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'Environment to run tests against'
-        type: environment
+      version_number:
+        description: 'New Version Number'
+        type: string
         required: true 
+      package_id: 
+       description: 'New Package ID'
+       type: string
+       required: true 
+     
+       
     
 
 jobs:
