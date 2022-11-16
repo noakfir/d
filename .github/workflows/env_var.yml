@@ -21,7 +21,7 @@ jobs:
      - name: get new var
        id: legacy_new_version
        run: |
-         heroku config:get new_var -a new-app-stage1 
+         output=$(heroku config:get new_var -a new-app-stage1)
          echo "::set-output name=old_version::$output"
      - name: set old var
        run: |
