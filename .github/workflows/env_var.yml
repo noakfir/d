@@ -22,7 +22,7 @@ jobs:
        id: legacy_new_version
        run: |
          output=$(heroku config:get new_var -a new-app-stage1)
-         echo "old_version=output" >> $GITHUB_OUTPUT
+         echo "old_version=$output" >> $GITHUB_OUTPUT
      - name: set old var
        run: |
          heroku config:set old_var=$INPUT_STORE --app "new-app-stage1"
