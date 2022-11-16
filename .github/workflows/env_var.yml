@@ -16,6 +16,7 @@ jobs:
          heroku_api_key: ${{secrets.HEROKU_API_KEY_NOA}}
          heroku_app_name: "new-app-stage1"
          heroku_email: "noa.kfir@aquant.io"
+         justlogin: true
       
      - name: get new var
        id: legacy_new_version
