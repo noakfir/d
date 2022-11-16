@@ -25,7 +25,7 @@ jobs:
          echo "::set-output name=old_version::$output"
      - name: set old var
        run: |
-         heroku config:set old_var=${{steps.legacy_new_version.outputs.old_version}} --app "new-app-stage1"
+         heroku config:set old_var="${{steps.legacy_new_version.outputs.old_version}}" --app "new-app-stage1"
      - name: set new_var and var
        run: |
          heroku config:set new_var=123 var=def -a new-app-stage1 
