@@ -36,7 +36,7 @@ jobs:
        id: legacy_id_number
        run: |
          output=$(heroku config:get ID -a noa-production)
-         echo "old_id=$output" >> $GITHUB_OUTPU
+         echo "old_id=$output" >> $GITHUB_OUTPUT
      
      - name: Set LEGACY_PACKAGE_VERSION in Prod
        run: |
