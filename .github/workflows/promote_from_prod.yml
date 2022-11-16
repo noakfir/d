@@ -2,21 +2,67 @@ name: promote form prod
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: true 
+    
 
 jobs:
-  login:
+  change_env_vars:
+    name: Change Environment variables 
     runs-on: ubuntu-latest
     steps:
+     - name: Checkout  
+       uses: actions/checkout@v3 
+     - name: Login 
+       uses: akhileshns/heroku-deploy@v3.12.12
+       with:
+         heroku_api_key: ${{secrets.HEROKU_API_KEY_NOA}}
+         heroku_app_name: "new-app-stage1"
+         heroku_email: "noa.kfir@aquant.io"
+         justlogin: true
+      
+     - name: Get New LEGACY_PACKAGE_VERSION
+       id: legacy_new_version
+       run: |
+         output=$(heroku config:get API_URL -a noa-production)
+         echo "old_version=$output" >> $GITHUB_OUTPUT
+     
+     - name: Set LEGACY_PACKAGE_VERSION in Prod
+       run: |
+         heroku config:set old_var=$INPUT_STORE --app "noa-production"
+       env: 
+         INPUT_STORE: ${{steps.legacy_new_version.outputs.old_version}}
+         
+     - name: Set LATEST_PACKAGE_VERSION and LATEST_PACKAGE_ID in Prod
+       run: |
+         heroku config:set new_var=123 var=def -a new-app-stage1
+     
+     - name: Set LATEST_PACKAGE_VERSION and LATEST_PACKAGE_ID in Legacy 
+       run: |
+         heroku config:set new_var=123 var=def -a new-app-stage1
+       
         
+
+        
+    
+    
      - uses: actions/checkout@v2
      - uses: akhileshns/heroku-deploy@v3.12.12
        with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY_NOA}}
           heroku_app_name: "noa-production"
           heroku_email: "noa.kfir@aquant.io"
-          branch: master
           justlogin: true
-          dontuseforce: true
-          buildpack: true
-          appdir: app
-     - run: API_URL=https://my.new.dev.api.com heroku pipelines:promote -a noa-production --to wrong-app1
+     - run: heroku pipelines:promote -a noa-production --to wrong-app1
+     
+     - uses: actions/checkout@v2
+     - uses: akhileshns/heroku-deploy@v3.12.12
+       with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY_NOA}}
+          heroku_app_name: "new-app-stage1"
+          heroku_email: "noa.kfir@aquant.io"
+          justlogin: true
+     - run: heroku pipelines:promote -a new-app-stage1 --to noa-production
