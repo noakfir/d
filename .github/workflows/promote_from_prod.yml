@@ -37,12 +37,22 @@ jobs:
        run: |
          output=$(heroku config:get ID -a noa-production)
          echo "old_id=$output" >> $GITHUB_OUTPUT
-     
+       
+       
+     - name: Set LATEST_PACKAGE_VERSION and LATEST_PACKAGE_ID in Legacy 
+       run: |
+         heroku config:set API_URL=$LEGACY_API ID=$LEGACY_ID -a wrong-app1
+       env:
+         LEGACY_API: ${{steps.legacy_new_version.outputs.old_version}}
+         LEGACY_ID: ${{steps.legacy_id_number.outputs.old_id}}
+    
+    
      - name: Set LEGACY_PACKAGE_VERSION in Prod
        run: |
          heroku config:set OLD_URL=$LEGACY_API --app noa-production
        env: 
          LEGACY_API: ${{steps.legacy_new_version.outputs.old_version}}
+ 
          
      - name: Set LATEST_PACKAGE_VERSION and LATEST_PACKAGE_ID in Prod
        run: |
@@ -51,12 +61,7 @@ jobs:
          NEW_API: ${{github.event.inputs.version_number}}
          NEW_ID: ${{github.event.inputs.package_id}}    
      
-     - name: Set LATEST_PACKAGE_VERSION and LATEST_PACKAGE_ID in Legacy 
-       run: |
-         heroku config:set API_URL=$LEGACY_API ID=$LEGACY_ID -a wrong-app1
-       env:
-         LEGACY_API: ${{steps.legacy_new_version.outputs.old_version}}
-         LEGACY_ID: ${{steps.legacy_id_number.outputs.old_id}}
+  
        
   promote_to_legacy:
     name: Promote Production to Legacy
