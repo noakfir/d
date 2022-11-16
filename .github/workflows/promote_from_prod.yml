@@ -47,7 +47,7 @@ jobs:
      - name: Set LATEST_PACKAGE_VERSION and LATEST_PACKAGE_ID in Prod
        run: |
          heroku config:set API_URL=$NEW_API ID=$NEW_ID -a noa-production
-         env:
+       env:
            NEW_API: ${{github.event.inputs.version_number}}
            NEW_ID: ${{steps.legacy_id_number.outputs.old_id}}    
      
