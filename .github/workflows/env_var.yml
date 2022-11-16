@@ -13,9 +13,9 @@ jobs:
      - name: Login 
        uses: akhileshns/heroku-deploy@v3.12.12
        with:
-          heroku_api_key: ${{HEROKU_API_KEY_NOA}}
-          heroku_app_name: "new-app-stage1"
-          heroku_email: "noa.kfir@aquant.io"
+         heroku_api_key: ${{HEROKU_API_KEY_NOA}}
+         heroku_app_name: "new-app-stage1"
+         heroku_email: "noa.kfir@aquant.io"
       
      - name: get new var
        id: legacy_new_version
