@@ -7,7 +7,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>API_URL: {window._env_.API_URL}</p>
-        <p>TEST: {process.env.TEST}</p>
+        <p>TEST: {process._env_.TEST}</p>
         <a
           className="App-link"
           href="https://reactjs.org"
