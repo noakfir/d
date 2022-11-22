@@ -6,6 +6,7 @@ touch ./env-config.js
 
 # Add assignment 
 echo "window._env_ = {" >> ./env-config.js
+echo "process.env = {" >> ./env-config.js
 
 # Read each line in .env file
 # Each line represents key=value pairs
